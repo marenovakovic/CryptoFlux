@@ -5,35 +5,38 @@ import com.marko.cryptoflux.common.CoroutineDispatchersTest
 import com.marko.cryptoflux.entities.Coin
 import com.marko.cryptoflux.factory.Factory
 import com.marko.cryptoflux.repository.CoinsRepository
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.whenever
+import io.mockk.*
+import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.runBlocking
-import org.junit.Test
+import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.TestInstance
 
-class GetCoinsTest {
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+internal class GetCoinsTest {
 
+	private val coinsRepository: CoinsRepository = mockk()
 	private val dispatchers = CoroutineDispatchersTest()
-	private val coinsRepository = mock<CoinsRepository>()
 	private val getCoins = GetCoins(dispatchers, coinsRepository)
 
 	@Test
-	fun `does use case calls repository`() = runBlocking<Unit> {
+	fun `test does use case calls repository`() = runBlocking<Unit> {
+		stubCoins(Factory.coins)
 		getCoins()
-		verify(coinsRepository).getCoins()
+		coVerify { coinsRepository.getCoins() }
 	}
 
 	@Test
-	fun `check use case result`() = runBlocking<Unit> {
+	fun `check use case result`() = runBlocking {
 		val coins = Factory.coins
-		stubCoins(coins)
+		val result = getCoins()
 
-		val result = (getCoins() as Result.Success).data
-		assert(result == coins)
+		println((result as Result.Error).exception)
+
+		assert(result is Result.Success)
+		assertEquals((result as Result.Success).data, coins)
 	}
 
-	private fun stubCoins(coins: List<Coin>) = runBlocking {
-		whenever(coinsRepository.getCoins())
-			.thenReturn(coins)
+	private fun stubCoins(coins: List<Coin>) {
+		coEvery { coinsRepository.getCoins() } returns coins
 	}
 }

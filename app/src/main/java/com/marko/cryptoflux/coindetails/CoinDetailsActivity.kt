@@ -40,12 +40,14 @@ class CoinDetailsActivity : DaggerAppCompatActivity() {
 		store.observe(this) {
 			when (it) {
 				is Result.Success -> {
+					coinDetailsProgressbar.hide()
 					coinDetailsId.text = it.data.id.toString()
 					coinDetailsName.text = it.data.name
 					coinDetailsSymbol.text = it.data.symbol
 					coinDetailsWebsiteSlug.text = it.data.websiteSlub
 				}
 				is Result.Error -> {
+					coinDetailsProgressbar.hide()
 					Timber.e(it.exception)
 					Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
 				}

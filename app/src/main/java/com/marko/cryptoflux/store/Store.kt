@@ -40,6 +40,12 @@ abstract class Store<T>(
 	val state: LiveData<T>
 		get() = _state
 
+
+	/**
+	 * Subscription to [Dispatcher.events] [BroadcastChannel]
+	 */
+	private val subscription = dispatcher.events.openSubscription()
+
 	/**
 	 * Register [LifecycleOwner] for the [Store] and register observer for [Store] state [LiveData]
 	 *
@@ -55,16 +61,14 @@ abstract class Store<T>(
 	 */
 	@OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
 	protected fun subscribe() {
-		launch { dispatcher.events.consumeEach(this@Store::handleAction) }
+		launch { subscription.consumeEach(this@Store::handleAction) }
 	}
 
 	/**
 	 * Stop listening for [Dispatcher] events in [Lifecycle.Event.ON_DESTROY]
 	 */
 	@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-	private fun cancel() {
-		launch { dispatcher.events.cancel() }
-	}
+	private fun cancel() = subscription.cancel()
 
 	/**
 	 * Handle [Action] dispatched by [Dispatcher]

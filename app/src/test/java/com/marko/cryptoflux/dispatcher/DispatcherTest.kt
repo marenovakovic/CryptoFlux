@@ -14,7 +14,7 @@ class DispatcherTest : BaseTest() {
 	private val dispatcher = DispatcherImpl(dispatchers)
 
 	@Test
-	fun `test dispatch GetCoins action`() = runBlocking<Unit> {
+	fun `test dispatch GetCoins action`() = runBlocking {
 		dispatcher.dispatch(GetCoinsAction)
 
 		val action = dispatcher.events.receive()
@@ -23,7 +23,7 @@ class DispatcherTest : BaseTest() {
 	}
 
 	@Test
-	fun `test SaveCoins action`() = runBlocking<Unit> {
+	fun `test SaveCoins action`() = runBlocking {
 		dispatcher.dispatch(SaveCoinsAction(listOf()))
 
 		val action = dispatcher.events.receive()
@@ -32,7 +32,7 @@ class DispatcherTest : BaseTest() {
 	}
 
 	@Test
-	fun `test SaveCoins action value`() = runBlocking<Unit> {
+	fun `test SaveCoins action value`() = runBlocking {
 		val coins = Factory.coins
 		dispatcher.dispatch(SaveCoinsAction(coins))
 

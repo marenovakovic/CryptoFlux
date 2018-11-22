@@ -2,16 +2,12 @@ package com.marko.cryptoflux.repository
 
 import com.marko.cryptoflux.common.TestUtils
 import com.marko.cryptoflux.entities.CoinsResponse
-import com.marko.cryptoflux.retrofit.CoinsApi
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.whenever
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class CoinsRepositoryImplTest {
 
-	private val api = mock<CoinsApi>()
-	private val coinsRepository = CoinsRepositoryImpl(api)
+	private val coinsRepository = CoinsRepositoryImpl()
 
 	@Test
 	fun `test getCoins`() = runBlocking<Unit> {
@@ -24,7 +20,7 @@ class CoinsRepositoryImplTest {
 	}
 
 	private fun stubResponse(response: CoinsResponse) = runBlocking {
-		whenever(api.coinsService.getCoins().await())
-			.thenReturn(response)
+		//		whenever(coins)
+//			.thenReturn(response)
 	}
 }

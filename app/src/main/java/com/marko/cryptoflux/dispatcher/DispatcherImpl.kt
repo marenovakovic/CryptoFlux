@@ -3,6 +3,7 @@ package com.marko.cryptoflux.dispatcher
 import com.marko.cryptoflux.actions.Action
 import com.marko.cryptoflux.coroutinedispatchers.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
@@ -23,7 +24,7 @@ class DispatcherImpl @Inject constructor(
 	 * [Action] events that stores subscribe to
 	 */
 	private val _events = ConflatedBroadcastChannel<Action>()
-	override val events: ReceiveChannel<Action> = _events.openSubscription()
+	override val events: BroadcastChannel<Action> = _events
 
 	/**
 	 * Adding [Action] to the events
@@ -31,8 +32,6 @@ class DispatcherImpl @Inject constructor(
 	 * @param action to be added to events
 	 */
 	override fun dispatch(action: Action) {
-		launch {
-			_events.offer(action)
-		}
+		launch { _events.send(action) }
 	}
 }
