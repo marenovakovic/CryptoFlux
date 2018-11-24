@@ -34,12 +34,16 @@ abstract class Store<T>(
 		get() = coroutineDispatchers.main + job
 
 	/**
+	 * [LifecycleOwner] that observes [Store]
+	 */
+	private lateinit var owner: LifecycleOwner
+
+	/**
 	 * Store state. View will react to this state
 	 */
 	protected val _state = MutableLiveData<T>()
 	val state: LiveData<T>
 		get() = _state
-
 
 	/**
 	 * Subscription to [Dispatcher.events] [BroadcastChannel]
@@ -52,7 +56,8 @@ abstract class Store<T>(
 	 * @param owner [LifecycleOwner], [Store] will register to and state [LiveData] observer
 	 */
 	fun observe(owner: LifecycleOwner, onStateChange: (T) -> Unit) {
-		owner.lifecycle.addObserver(this)
+		this.owner = owner
+		this.owner.lifecycle.addObserver(this)
 		_state.distinct().observe(owner, Observer { onStateChange(it) })
 	}
 
@@ -68,7 +73,11 @@ abstract class Store<T>(
 	 * Stop listening for [Dispatcher] events in [Lifecycle.Event.ON_DESTROY]
 	 */
 	@OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-	private fun cancel() = subscription.cancel()
+	private fun cancel() {
+		owner.lifecycle.removeObserver(this)
+		subscription.cancel()
+
+	}
 
 	/**
 	 * Handle [Action] dispatched by [Dispatcher]

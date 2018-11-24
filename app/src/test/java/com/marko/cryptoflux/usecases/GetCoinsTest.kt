@@ -19,10 +19,10 @@ internal class GetCoinsTest {
 	private val getCoins = GetCoins(dispatchers, coinsRepository)
 
 	@Test
-	fun `test does use case calls repository`() = runBlocking<Unit> {
+	fun `test does use case calls repository`() = runBlocking {
 		stubCoins(Factory.coins)
 		getCoins()
-		coVerify { coinsRepository.getCoins() }
+		coVerify(exactly = 1) { coinsRepository.getCoins() }
 	}
 
 	@Test

@@ -6,6 +6,7 @@ import com.marko.cryptoflux.R
 import com.marko.cryptoflux.Result
 import com.marko.cryptoflux.actions.GetCoinAction
 import com.marko.cryptoflux.dispatcher.Dispatcher
+import com.marko.cryptoflux.entities.Coin
 import com.marko.cryptoflux.entities.CoinId
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_coin_details.*

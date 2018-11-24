@@ -38,12 +38,12 @@ class MainActivity : DaggerAppCompatActivity() {
 		store.observe(this) {
 			when (it) {
 				is Result.Success -> {
-					coinsAdapter.coins = it.data
 					progressBar.hide()
+					coinsAdapter.coins = it.data
 				}
 				is Result.Error -> {
-					Timber.e(it.exception)
 					progressBar.hide()
+					Timber.e(it.exception)
 					Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
 				}
 			}
