@@ -14,11 +14,21 @@ import kotlinx.coroutines.channels.consumeEach
 import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
+/**
+ * Base [ViewModel] class with [CoroutineScope]
+ *
+ * @param dispatcher [Dispatcher] from where [BaseViewModel] will get instructions
+ *
+ * @param dispatchers [CoroutineDispatchers]
+ */
 abstract class BaseViewModel<T>(
 	dispatcher: Dispatcher,
 	private val dispatchers: CoroutineDispatchers
 ) : ViewModel(), CoroutineScope {
 
+	/**
+	 * Handle actions dispatched by [Dispatcher]
+	 */
 	protected abstract fun handleActions(action: Action)
 
 	/**
@@ -32,15 +42,31 @@ abstract class BaseViewModel<T>(
 	override val coroutineContext: CoroutineContext
 		get() = dispatchers.main + job
 
+	/**
+	 * Open subscription to [Dispatcher.events]
+	 */
 	private val subscription = dispatcher.events.openSubscription()
 
-	protected val _state = MutableLiveData<T>()
+	/**
+	 * State view will react to
+	 */
+	private  val _state = MutableLiveData<T>()
 	val state: LiveData<T>
 		get() = _state.distinct()
 
+	/**
+	 * Start listening to [Dispatcher.events]
+	 */
 	init {
 		launch { subscription.consumeEach(::handleActions) }
 	}
+
+	/**
+	 * Sets the state so [_state] doesn't have to be exposed
+	 *
+	 * @param value state to be set
+	 */
+	protected fun setState(value: T) { _state.value = value }
 
 	/**
 	 * Cancel [job] and cancel [subscription]

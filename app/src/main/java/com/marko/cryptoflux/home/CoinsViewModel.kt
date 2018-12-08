@@ -19,7 +19,7 @@ class CoinsViewModel(
 
 	override fun handleActions(action: Action) {
 		when (action) {
-			is GetCoinsAction -> launch { _state.value = getCoins() }
+			is GetCoinsAction -> launch { setState(getCoins()) }
 		}
 	}
 }
