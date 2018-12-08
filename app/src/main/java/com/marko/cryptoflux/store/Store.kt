@@ -16,12 +16,12 @@ import kotlin.coroutines.CoroutineContext
 /**
  * provides [CoroutineScope] to [Store]s
  *
- * @param coroutineDispatchers [Dispatchers] abstraction
+ * @param dispatchers [Dispatchers] abstraction
  *
  * @param dispatcher [DispatcherImpl] from which store will receive actions to perform
  */
 abstract class Store<T>(
-	private val coroutineDispatchers: CoroutineDispatchers,
+	private val dispatchers: CoroutineDispatchers,
 	private val dispatcher: Dispatcher
 ) : CoroutineScope, LifecycleObserver {
 
@@ -30,8 +30,11 @@ abstract class Store<T>(
 	 */
 	private val job = Job()
 
+	/**
+	 * Store [CoroutineContext] [Dispatchers.Main]
+	 */
 	override val coroutineContext: CoroutineContext
-		get() = coroutineDispatchers.main + job
+		get() = dispatchers.main + job
 
 	/**
 	 * [LifecycleOwner] that observes [Store]

@@ -9,9 +9,7 @@ import kotlinx.coroutines.withContext
  *
  * @param dispatchers [CoroutineDispatchers]
  */
-abstract class UseCase<in P, R>(
-	private val dispatchers: CoroutineDispatchers
-) {
+abstract class UseCase<in P, R>(private val dispatchers: CoroutineDispatchers) {
 	/**
 	 * This is where business logic is executed.
 	 * Override this to set code to be executed

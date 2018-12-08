@@ -2,6 +2,8 @@ package com.marko.cryptoflux.home
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.marko.cryptoflux.R
 import com.marko.cryptoflux.Result
@@ -20,10 +22,14 @@ import javax.inject.Inject
 class MainActivity : DaggerAppCompatActivity() {
 
 	@Inject
-	lateinit var store: CoinsStore
+	lateinit var dispatcher: Dispatcher
 
 	@Inject
-	lateinit var dispatcher: Dispatcher
+	lateinit var factory: CoinsViewModelFactory
+
+	private val viewModel: CoinsViewModel by lazy {
+		ViewModelProviders.of(this, factory).get(CoinsViewModel::class.java)
+	}
 
 	private val coinsAdapter = CoinsAdapter {
 		startActivity<CoinDetailsActivity>(CoinDetailsActivity.EXTRA_COIN_ID to it)
@@ -35,7 +41,7 @@ class MainActivity : DaggerAppCompatActivity() {
 
 		dispatcher.dispatch(GetCoinsAction)
 
-		store.observe(this) {
+		viewModel.state.observe(this, Observer {
 			when (it) {
 				is Result.Success -> {
 					progressBar.hide()
@@ -47,7 +53,7 @@ class MainActivity : DaggerAppCompatActivity() {
 					Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
 				}
 			}
-		}
+		})
 
 		recyclerView.adapter = coinsAdapter
 		recyclerView.layoutManager =

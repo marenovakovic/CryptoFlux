@@ -5,7 +5,6 @@ import com.marko.cryptoflux.coroutinedispatchers.CoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.ConflatedBroadcastChannel
-import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,12 +12,12 @@ import javax.inject.Singleton
 /**
  * Receives [Action] and dispatches it to the stores
  *
- * @param coroutineDispatchers abstracted [Dispatchers] for easy testing
+ * @param dispatchers abstracted [Dispatchers] for easy testing
  */
 @Singleton
 class DispatcherImpl @Inject constructor(
-	coroutineDispatchers: CoroutineDispatchers
-) : BaseDispatcher(coroutineDispatchers), Dispatcher {
+	dispatchers: CoroutineDispatchers
+) : BaseDispatcher(dispatchers), Dispatcher {
 
 	/**
 	 * [Action] events that stores subscribe to

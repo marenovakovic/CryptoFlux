@@ -8,10 +8,10 @@ import kotlin.coroutines.CoroutineContext
 
 /**
  * Provides [CoroutineScope] to [DispatcherImpl]
- * @param coroutineDispatchers abstracted [Dispatchers] for easy testing
+ * @param dispatchers abstracted [Dispatchers] for easy testing
  */
 abstract class BaseDispatcher(
-	private val coroutineDispatchers: CoroutineDispatchers
+	private val dispatchers: CoroutineDispatchers
 ) : CoroutineScope {
 
 	/**
@@ -20,5 +20,5 @@ abstract class BaseDispatcher(
 	private val job = Job()
 
 	override val coroutineContext: CoroutineContext
-		get() = coroutineDispatchers.main + job
+		get() = dispatchers.main + job
 }

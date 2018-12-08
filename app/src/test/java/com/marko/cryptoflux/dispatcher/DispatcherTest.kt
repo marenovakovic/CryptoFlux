@@ -3,14 +3,14 @@ package com.marko.cryptoflux.dispatcher
 import com.marko.cryptoflux.actions.GetCoinsAction
 import com.marko.cryptoflux.actions.SaveCoinsAction
 import com.marko.cryptoflux.common.BaseTest
-import com.marko.cryptoflux.common.CoroutineDispatchersTest
+import com.marko.cryptoflux.common.TestCoroutineDispatchers
 import com.marko.cryptoflux.factory.Factory
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
 class DispatcherTest : BaseTest() {
 
-	private val dispatchers = CoroutineDispatchersTest()
+	private val dispatchers = TestCoroutineDispatchers()
 	private val dispatcher = DispatcherImpl(dispatchers)
 
 	@Test

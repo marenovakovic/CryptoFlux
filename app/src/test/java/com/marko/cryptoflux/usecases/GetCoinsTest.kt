@@ -1,7 +1,7 @@
 package com.marko.cryptoflux.usecases
 
 import com.marko.cryptoflux.Result
-import com.marko.cryptoflux.common.CoroutineDispatchersTest
+import com.marko.cryptoflux.common.TestCoroutineDispatchers
 import com.marko.cryptoflux.entities.Coin
 import com.marko.cryptoflux.factory.Factory
 import com.marko.cryptoflux.repository.CoinsRepository
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.TestInstance
 internal class GetCoinsTest {
 
 	private val coinsRepository: CoinsRepository = mockk()
-	private val dispatchers = CoroutineDispatchersTest()
+	private val dispatchers = TestCoroutineDispatchers()
 	private val getCoins = GetCoins(dispatchers, coinsRepository)
 
 	@Test
