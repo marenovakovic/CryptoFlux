@@ -1,6 +1,7 @@
 package com.marko.cryptoflux.injection.activity
 
 import com.marko.cryptoflux.coindetails.CoinDetailsActivity
+import com.marko.cryptoflux.coindetails.CoinDetailsModule
 import com.marko.cryptoflux.home.HomeModule
 import com.marko.cryptoflux.home.MainActivity
 import dagger.Module
@@ -14,6 +15,6 @@ abstract class ActivityBindingModule {
 	abstract fun mainActivity(): MainActivity
 
 	@ActivityScope
-	@ContributesAndroidInjector
+	@ContributesAndroidInjector(modules = [CoinDetailsModule::class])
 	abstract fun coinDetailsActivity(): CoinDetailsActivity
 }

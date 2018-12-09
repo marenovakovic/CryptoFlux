@@ -64,7 +64,7 @@ abstract class BaseViewModel<T>(
 	/**
 	 * Sets the state so [_state] doesn't have to be exposed
 	 *
-	 * @param value state to be set
+	 * @param value new state value
 	 */
 	protected fun setState(value: T) { _state.value = value }
 

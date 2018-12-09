@@ -10,6 +10,7 @@ import com.marko.cryptoflux.Result
 import com.marko.cryptoflux.actions.GetCoinsAction
 import com.marko.cryptoflux.coindetails.CoinDetailsActivity
 import com.marko.cryptoflux.dispatcher.Dispatcher
+import com.marko.cryptoflux.entities.Coin
 import com.marko.cryptoflux.extensions.startActivity
 import dagger.android.support.DaggerAppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
@@ -17,7 +18,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * [Activity] that will fetch and displays list of [Coin]s
+ * [DaggerAppCompatActivity] that will fetch and displays list of [Coin]s
  */
 class MainActivity : DaggerAppCompatActivity() {
 
@@ -27,7 +28,7 @@ class MainActivity : DaggerAppCompatActivity() {
 	@Inject
 	lateinit var factory: CoinsViewModelFactory
 
-	private val viewModel: CoinsViewModel by lazy {
+	private val viewModel: CoinsViewModel by lazy(LazyThreadSafetyMode.NONE) {
 		ViewModelProviders.of(this, factory).get(CoinsViewModel::class.java)
 	}
 
@@ -41,23 +42,24 @@ class MainActivity : DaggerAppCompatActivity() {
 
 		dispatcher.dispatch(GetCoinsAction)
 
-		viewModel.state.observe(this, Observer {
-			when (it) {
-				is Result.Success -> {
-					progressBar.hide()
-					coinsAdapter.coins = it.data
-				}
-				is Result.Error -> {
-					progressBar.hide()
-					Timber.e(it.exception)
-					Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
-				}
-			}
-		})
+		viewModel.state.observe(this, Observer(::handleResult))
 
 		recyclerView.adapter = coinsAdapter
 		recyclerView.layoutManager =
 				LinearLayoutManager(this).apply { isItemPrefetchEnabled = true }
 		recyclerView.setHasFixedSize(true)
+	}
+
+	private fun handleResult(result: Result<List<Coin>>) = when (result) {
+		is Result.Loading -> Unit
+		is Result.Success -> {
+			progressBar.hide()
+			coinsAdapter.coins = result.data
+		}
+		is Result.Error -> {
+			progressBar.hide()
+			Timber.e(result.exception)
+			Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
+		}
 	}
 }

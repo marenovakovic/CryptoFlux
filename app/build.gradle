@@ -4,7 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
+    useLibrary 'android.test.runner'
+
+    useLibrary 'android.test.base'
+    useLibrary 'android.test.mock'
+
     compileSdkVersion rootProject.compileSdkVersion
+
     defaultConfig {
         applicationId "com.marko.cryptoflux"
         minSdkVersion rootProject.minSdkVersion
@@ -13,11 +19,16 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    testOptions {
+        unitTests.returnDefaultValues = true
     }
 }
 
@@ -66,10 +77,26 @@ dependencies {
     // ViewModel and LiveData
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycleVersion"
 
+    // Testing
     testImplementation "androidx.arch.core:core-testing:$lifecycleVersion"
     testImplementation "junit:junit:$jUnitVersion"
     testImplementation "org.junit.jupiter:junit-jupiter-api:$jUnit5Version"
     testImplementation "io.mockk:mockk:$mockkVersion"
+    androidTestImplementation "io.mockk:mockk-android:$mockkVersion"
+    testImplementation "org.assertj:assertj-core:$assertjVersion"
+
+    // AndroidJUnitRunner and JUnit Rules
     androidTestImplementation "androidx.test:runner:$testRunnerVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoCoreVersion"
+    androidTestImplementation "androidx.test:rules:$testRulesVersion"
+
+    // Assertions
+    androidTestImplementation "androidx.test.ext:junit:$testExtVersion"
+    androidTestImplementation "androidx.test.ext:truth:$testExtVersion"
+    androidTestImplementation "com.google.truth:truth:$googleTruthVersion"
+
+    // Core library
+    androidTestImplementation "androidx.test:core:$testCoreVersion"
+
+    // Espresso
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
 }

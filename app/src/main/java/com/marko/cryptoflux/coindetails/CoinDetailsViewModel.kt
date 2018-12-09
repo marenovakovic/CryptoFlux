@@ -3,25 +3,22 @@ package com.marko.cryptoflux.coindetails
 import com.marko.cryptoflux.Result
 import com.marko.cryptoflux.actions.Action
 import com.marko.cryptoflux.actions.GetCoinAction
+import com.marko.cryptoflux.base.BaseViewModel
 import com.marko.cryptoflux.coroutinedispatchers.CoroutineDispatchers
 import com.marko.cryptoflux.dispatcher.Dispatcher
 import com.marko.cryptoflux.entities.Coin
-import com.marko.cryptoflux.injection.activity.ActivityScope
-import com.marko.cryptoflux.store.Store
 import com.marko.cryptoflux.usecases.GetCoin
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@ActivityScope
-class CoinDetailsStore @Inject constructor(
-	coroutineDispatchers: CoroutineDispatchers,
+class CoinDetailsViewModel(
 	dispatcher: Dispatcher,
+	dispatchers: CoroutineDispatchers,
 	private val getCoin: GetCoin
-) : Store<Result<Coin>>(coroutineDispatchers, dispatcher) {
+) : BaseViewModel<Result<Coin>>(dispatcher, dispatchers) {
 
-	override fun handleAction(action: Action) {
-		when (action) {
-			is GetCoinAction -> launch { _state.value = getCoin(action.id) }
+	override fun handleActions(action: Action) {
+		when(action) {
+			is GetCoinAction -> launch { setState(getCoin(action.id)) }
 		}
 	}
 }

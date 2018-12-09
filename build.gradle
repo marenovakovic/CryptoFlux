@@ -16,9 +16,10 @@ buildscript {
         daggerVersion = '2.16'
         daggerCompilerVersion = '2.16'
         daggerAndroidProcessorVersion = '2.16'
-        espressoCoreVersion = '3.1.0-alpha4'
+        espressoVersion = '3.1.0'
         glideVersion = '4.8.0'
         gsonVersion = '2.8.5'
+        googleTruthVersion = '0.42'
         javaxInjectVersion = '1'
         jUnitVersion = '4.12'
         jUnit5Version = '5.3.1'
@@ -37,7 +38,12 @@ buildscript {
         roomVersion = '2.0.0'
         robolectricVersion = '4.0'
         timberVersion = '4.7.1'
+        testExtVersion = '1.0.0'
         testRunnerVersion = '1.1.0'
+        testRulesVersion = '1.1.0'
+        testCoreVersion = '1.0.0'
+        testExtJUnitVersion = '1.0.0'
+        testExtTruthVersion = '1.0.0'
     }
 
     repositories {

@@ -2,6 +2,8 @@ package com.marko.cryptoflux.coindetails
 
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.marko.cryptoflux.R
 import com.marko.cryptoflux.Result
 import com.marko.cryptoflux.actions.GetCoinAction
@@ -23,10 +25,14 @@ class CoinDetailsActivity : DaggerAppCompatActivity() {
 	}
 
 	@Inject
-	lateinit var store: CoinDetailsStore
+	lateinit var dispatcher: Dispatcher
 
 	@Inject
-	lateinit var dispatcher: Dispatcher
+	lateinit var factory: CoinDetailsViewModelFactory
+
+	private val viewModel: CoinDetailsViewModel by lazy(LazyThreadSafetyMode.NONE) {
+		ViewModelProviders.of(this, factory).get(CoinDetailsViewModel::class.java)
+	}
 
 	private val coinId: CoinId by lazy(LazyThreadSafetyMode.NONE) {
 		intent.getIntExtra(EXTRA_COIN_ID, - 1)
@@ -38,21 +44,26 @@ class CoinDetailsActivity : DaggerAppCompatActivity() {
 
 		dispatcher.dispatch(GetCoinAction(id = coinId))
 
-		store.observe(this) {
-			when (it) {
-				is Result.Success -> {
-					coinDetailsProgressbar.hide()
-					coinDetailsId.text = it.data.id.toString()
-					coinDetailsName.text = it.data.name
-					coinDetailsSymbol.text = it.data.symbol
-					coinDetailsWebsiteSlug.text = it.data.websiteSlub
-				}
-				is Result.Error -> {
-					coinDetailsProgressbar.hide()
-					Timber.e(it.exception)
-					Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
-				}
-			}
+		viewModel.state.observe(this, Observer(::handleResult))
+	}
+
+	private fun handleResult(result: Result<Coin>) = when (result) {
+		is Result.Loading -> Unit
+		is Result.Success -> {
+			coinDetailsProgressbar.hide()
+			populateUi(result.data)
 		}
+		is Result.Error -> {
+			coinDetailsProgressbar.hide()
+			Timber.e(result.exception)
+			Toast.makeText(this, "Error occurred", Toast.LENGTH_LONG).show()
+		}
+	}
+
+	private fun populateUi(coin: Coin) {
+		coinDetailsId.text = coin.id.toString()
+		coinDetailsName.text = coin.name
+		coinDetailsSymbol.text = coin.symbol
+		coinDetailsWebsiteSlug.text = coin.websiteSlub
 	}
 }
